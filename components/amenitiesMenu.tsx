@@ -28,7 +28,6 @@ import CrisisAlertIcon from '@mui/icons-material/CrisisAlert';
 import AmenitiesFirstCard from "./amenitiesFirstCard";
 import AmenitiesSecondCard from "./amenitiesSecondCard";
 import AmenitiesThirdCard from "./amenitiesThirdCard";
-import { useState } from "react";
 
 type Props = {
     setFirstMenu: Function;
@@ -39,41 +38,42 @@ type Props = {
     thirdMenu: Array<string | undefined>;
 }
 
+const firstMenu = [
+    { text: "무선 인터넷", icon: <WifiIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "TV", icon: <LiveTvIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "주방", icon: <CountertopsIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "세탁기", icon: <LocalLaundryServiceIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "건물 내 무료 주차", icon: <DirectionsCarFilledIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "건물 내 유료 주차", icon: <LocalAtmIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "에어컨", icon: <AirIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "업무 전용 공간", icon: <DeskIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+];
+
+const secondMenu = [
+    { text: "수영장", icon: <PoolIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "온수 욕조", icon: <HotTubIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "파티오", icon: <DeckIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "바비큐 그릴", icon: <OutdoorGrillIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "야외 식사 공간", icon: <TableRestaurantIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "화로", icon: <LocalFireDepartmentIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "당구대", icon: <SportsBaseballIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "실내 벽난로", icon: <FireplaceIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "피아노", icon: <PianoIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "운동 기구", icon: <FitnessCenterIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "호수로 연결됨", icon: <WavesIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "해변과 인접", icon: <SurfingIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "스키를 탄 채로 출입 가능", icon: <DownhillSkiingIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "야외 샤워 시설", icon: <ShowerIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+];
+
+const thirdMenu = [
+    { text: "화재경보기", icon: <BlurCircularIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "구급 상자", icon: <MedicationIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "소화기", icon: <FireExtinguisherIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+    { text: "일산화탄소 경보기", icon: <CrisisAlertIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
+];
+
 function AmenitiesMenu(props: Props) {
-    const firstMenu = [
-        { text: "무선 인터넷", icon: <WifiIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "TV", icon: <LiveTvIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "주방", icon: <CountertopsIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "세탁기", icon: <LocalLaundryServiceIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "건물 내 무료 주차", icon: <DirectionsCarFilledIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "건물 내 유료 주차", icon: <LocalAtmIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "에어컨", icon: <AirIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "업무 전용 공간", icon: <DeskIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-    ];
-
-    const secondMenu = [
-        { text: "수영장", icon: <PoolIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "온수 욕조", icon: <HotTubIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "파티오", icon: <DeckIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "바비큐 그릴", icon: <OutdoorGrillIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "야외 식사 공간", icon: <TableRestaurantIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "화로", icon: <LocalFireDepartmentIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "당구대", icon: <SportsBaseballIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "실내 벽난로", icon: <FireplaceIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "피아노", icon: <PianoIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "운동 기구", icon: <FitnessCenterIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "호수로 연결됨", icon: <WavesIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "해변과 인접", icon: <SurfingIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "스키를 탄 채로 출입 가능", icon: <DownhillSkiingIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "야외 샤워 시설", icon: <ShowerIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-    ];
-
-    const thirdMenu = [
-        { text: "화재경보기", icon: <BlurCircularIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "구급 상자", icon: <MedicationIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "소화기", icon: <FireExtinguisherIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-        { text: "일산화탄소 경보기", icon: <CrisisAlertIcon style={{ fontSize: 80, padding: 20, color: "black" }} /> },
-    ];
 
     return (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "80%" }}>

@@ -1,11 +1,13 @@
 import { Card, CardActionArea, CardContent, CardMedia, Grid, IconButton, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 import Hostings from "../interface/hostings";
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import SimpleImageSlider from "react-simple-image-slider/dist/ImageSlider";
+import { useRouter } from "next/router";
+
 // datefns
 function HostingList() {
     const [data, setData] = useState<[Hostings]>();
+    const router = useRouter();
 
     useEffect(() => {
         !async function () {
@@ -18,12 +20,12 @@ function HostingList() {
     return (
         <Grid container>
             {data && data.map((one) =>
-                <Grid item md={2} sm={12} sx={{ padding: 2 }}>
+                <Grid item md={2} sm={12} sx={{ padding: 2 }} key={one._id}>
                     <Card sx={{ width: "100%", maxWidth: 530, position: "relative" }} key={one._id} >
                         <IconButton style={{ position: "absolute", top: 5, right: 5, zIndex: 10 }} onClick={() => console.log("버튼")}>
                             <FavoriteIcon />
                         </IconButton>
-                        <CardActionArea onClick={() => console.log("카드")}>
+                        <CardActionArea onClick={()=>router.push(`rooms/${one._id}`)}>
                             <CardMedia
                                 component="img"
                                 height={300}
@@ -31,13 +33,6 @@ function HostingList() {
                                 alt="숙소 대표 이미지"
                                 sx={{ borderRadius: 5, padding: 1 }}
                             />
-                            {/* <SimpleImageSlider
-                                width={896}
-                                height={504}
-                                images={one.imageUrl}
-                                showBullets={true}
-                                showNavs={true}
-                            /> */}
                             <CardContent style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                                 <div style={{ display: "flex", flexDirection: "column" }}>
                                     <Typography style={{ fontSize: 15 }}>
@@ -55,7 +50,6 @@ function HostingList() {
                     </Card>
                 </Grid>
             )}
-
         </Grid>
     );
 }
