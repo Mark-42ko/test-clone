@@ -5,15 +5,22 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react"
 import Hostings from "../../../interface/hostings";
 import Link from "next/link";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { useSession } from "next-auth/react";
+import Reservation from "../../../interface/reservation";
+
 
 function Stays() {
+    const PAYPAL_KEY = process.env.NEXT_PUBLIC_PAYPAL_KEY as string;
+
     const router = useRouter();
     const [data, setData] = useState<Hostings>();
     const sdate = router.query.checkin! as string;
     const edate = router.query.checkout! as string;
     const totalCharge = data?.price! * (Math.ceil((new Date(edate).getTime() - new Date(sdate).getTime()) / (24 * 60 * 60 * 1000))) + (data?.price! * (Math.ceil((new Date(edate).getTime() - new Date(sdate).getTime()) / (24 * 60 * 60 * 1000)))) * 0.1;
-    const halfCharge = (data?.price! * (Math.ceil((new Date(edate).getTime() - new Date(sdate).getTime()) / (24 * 60 * 60 * 1000))) + (data?.price! * (Math.ceil((new Date(edate).getTime() - new Date(sdate).getTime()) / (24 * 60 * 60 * 1000)))) * 0.1)*0.5
-    const [value, setValue] = useState<string>("");
+    const halfCharge = (data?.price! * (Math.ceil((new Date(edate).getTime() - new Date(sdate).getTime()) / (24 * 60 * 60 * 1000))) + (data?.price! * (Math.ceil((new Date(edate).getTime() - new Date(sdate).getTime()) / (24 * 60 * 60 * 1000)))) * 0.1) * 0.5
+    const [value, setValue] = useState<string>(totalCharge.toString());
+    const { data: session, status } = useSession();
 
     useEffect(() => {
         !async function () {
@@ -29,7 +36,6 @@ function Stays() {
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue((event.target as HTMLInputElement).value);
-        console.log((event.target as HTMLInputElement).value);
     };
 
     return (
@@ -67,7 +73,7 @@ function Stays() {
                                 <Button style={{ color: "black", fontSize: 18 }}><u><b>수정</b></u></Button>
                             </div><hr style={{ marginTop: 30 }} />
                             <Typography style={{ fontSize: 25, marginTop: 20 }}><b>결제 방식 선택하기</b></Typography>
-                            <Box style={{ border: "1px solid", borderRadius: 5, padding: 15, borderColor: "#D8D8D8", marginBottom:25 }}>
+                            <Box style={{ border: "1px solid", borderRadius: 5, padding: 15, borderColor: "#D8D8D8", marginBottom: 25 }}>
                                 <RadioGroup value={value} onChange={handleChange}>
                                     <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid" }}>
                                         <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
@@ -88,12 +94,69 @@ function Stays() {
                                         </div>
                                     </div>
                                 </RadioGroup>
-                            </Box><hr/>
-                            <Typography style={{fontSize:25, marginTop:25}}><b>환불 정책</b></Typography>
-                            <Typography style={{marginTop:15, marginBottom:25}}><b>{sdate.split("-")[1]}월 {Number(sdate.split("-")[2])-1}일 전까지 무료로 취소하실 수 있습니다. </b>체크인 날짜인 4월 3일 전에 취소하면 부분 환불을 받으실 수 있습니다. <Link href={"/privacyPolicy"}><u><b>자세히 알아보기</b></u></Link></Typography>
-                            <hr/>
-                            <Typography style={{fontSize:12, marginTop:25}}>아래 버튼을 선택하면 <Link href={"/privacyPolicy"}><u><b>호스트가 설정한 숙소 이용규칙</b></u></Link>, <Link href={"/privacyPolicy"}><u><b>에어비앤비 재예약 및 환불 정책</b></u></Link>에 동의하며, 피해에 대한 책임이 본인에게 있을 경우 에어비앤비가 <Link href={"/privacyPolicy"}><u><b>결제 수단으로 청구</b></u></Link>의 조치를 취할 수 있다는 사실에 동의하는 것입니다.</Typography>
-                            <Button style={{backgroundColor:"red", color:"white", marginTop:25}}>확인 및 결제</Button>
+                            </Box><hr />
+                            <Typography style={{ fontSize: 25, marginTop: 25 }}><b>환불 정책</b></Typography>
+                            <Typography style={{ marginTop: 15, marginBottom: 25 }}><b>{sdate.split("-")[1]}월 {Number(sdate.split("-")[2]) - 1}일 전까지 무료로 취소하실 수 있습니다. </b>체크인 날짜인 4월 3일 전에 취소하면 부분 환불을 받으실 수 있습니다. <Link href={"/privacyPolicy"}><u><b>자세히 알아보기</b></u></Link></Typography>
+                            <hr />
+                            <Typography style={{ fontSize: 12, marginTop: 25 }}>아래 버튼을 선택하면 <Link href={"/privacyPolicy"}><u><b>호스트가 설정한 숙소 이용규칙</b></u></Link>, <Link href={"/privacyPolicy"}><u><b>에어비앤비 재예약 및 환불 정책</b></u></Link>에 동의하며, 피해에 대한 책임이 본인에게 있을 경우 에어비앤비가 <Link href={"/privacyPolicy"}><u><b>결제 수단으로 청구</b></u></Link>의 조치를 취할 수 있다는 사실에 동의하는 것입니다.</Typography>
+                            <Button style={{ backgroundColor: "red", color: "white", marginTop: 25, marginBottom: 25 }}>확인 및 결제</Button>
+                            <PayPalScriptProvider options={{ "client-id": PAYPAL_KEY }} >
+                                <PayPalButtons style={{ layout: "horizontal" }} forceReRender={[value]}
+                                    createOrder={(data, actions) => {
+                                        return actions.order.create({
+                                            purchase_units: [
+                                                {
+                                                    description: "숙소 예약금",
+                                                    amount: {
+                                                        value: value,
+                                                    },
+                                                },
+                                            ],
+                                        });
+                                    }}
+                                    onApprove={async (datas, actions) => {
+                                        const response = await fetch("api/findByproductIdReservation", {
+                                            method: "POST",
+                                            body: JSON.stringify({
+                                                productId: router.query.productId
+                                            }),
+                                            headers: {
+                                                "Content-type": "application/json"
+                                            }
+                                        });
+                                        const json = await response.json();
+
+                                        console.log(json.data);
+
+                                        // json.data.forEach((one:Reservation)=>{
+                                        //     if(new Date(one.checkIn) =< new Date(sdate) && new Date(sdate) =< new Date(one.checkOut) && new Date(one.sdate)  =< new Date(edate) && new Date(edate) =< new Date(one.edate) ){
+                                                
+                                        //     }
+                                        // });
+
+                                        await fetch("/api/reservation", {
+                                            method: "POST",
+                                            body: JSON.stringify({
+                                                hostingId: data?.user,
+                                                guestId: session?.user?.email,
+                                                orderId: datas.orderID,
+                                                payId: datas.payerID,
+                                                checkIn: sdate,
+                                                checkOut: edate,
+                                                numberOfGuest: router.query.numberOfGuest,
+                                                numberOfAdults: router.query.numberOfAdults,
+                                                numberOfChildren: router.query.numberOfChildren,
+                                                numberOfInfants: router.query.numberOfInfants,
+                                                productId: router.query.productId
+                                            }),
+                                            headers: {
+                                                "Content-type": "application/json"
+                                            }
+                                        });
+                                        router.push("/trips");
+                                    }}
+                                />
+                            </PayPalScriptProvider>
                         </Grid>
                         <Grid item md={5} sm={12} sx={{ padding: 5 }}>
                             <Box style={{ border: "1px solid", borderRadius: 20, width: "100%", padding: 15, borderColor: "#D8D8D8" }} position={"sticky"} top={"100px"}>
@@ -118,7 +181,7 @@ function Stays() {
                                     <Typography>총합계</Typography>
                                     <Typography>${totalCharge.toLocaleString()}</Typography>
                                 </div><hr />
-                                <Typography style={{marginTop:15, marginBottom:15}}>
+                                <Typography style={{ marginTop: 15, marginBottom: 15 }}>
                                     해외에서 결제가 처리되기 때문에 카드 발행사에서 추가 수수료를 부과할 수 있습니다.
                                 </Typography>
                             </Box>

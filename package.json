@@ -16,6 +16,7 @@
     "@mui/joy": "^5.0.0-alpha.52",
     "@mui/material": "^5.10.12",
     "@mui/x-date-pickers-pro": "^5.0.8",
+    "@paypal/react-paypal-js": "^7.8.1",
     "@types/bcryptjs": "^2.4.2",
     "@types/formidable": "^2.0.5",
     "@types/google-map-react": "^2.1.7",
