@@ -1,4 +1,4 @@
-import { ButtonBase, IconButton } from "@mui/material";
+import { Button, ButtonBase, IconButton } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import HeaderMenu from "../headerMenu";
@@ -7,6 +7,7 @@ import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 import LanguageIcon from '@mui/icons-material/Language';
 import SearchIcon from '@mui/icons-material/Search';
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 export default function Header() {
     const router = useRouter();
@@ -18,6 +19,7 @@ export default function Header() {
     const handleClose = (): void => {
         setAnchorEl(null);
     };
+    const {data:session, status} = useSession();
 
     return (
         <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%", margin: 30, height: 15 }}>
@@ -42,13 +44,14 @@ export default function Header() {
                 </div>
             </ButtonBase>
             <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                <h3 style={{ fontSize: 15 }}>호스트 되기</h3>
+                <Button onClick={()=> session?.user?.email ? router.push("/host/homes") : alert("로그인 후 이용해주세요.")} style={{ fontSize: 15, color:"black" }}><b>호스트 되기</b></Button>
                 <IconButton
                     size="large"
                     aria-label="account of current user"
                     aria-controls="menu-appbar"
                     aria-haspopup="true"
                     color="inherit"
+                    onClick={()=>alert("현재 한국어만 사용가능합니다.")}
                 >
                     <LanguageIcon />
                 </IconButton>

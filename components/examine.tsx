@@ -10,6 +10,7 @@ import GradingIcon from '@mui/icons-material/Grading';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CreateIcon from '@mui/icons-material/Create';
 import ExamineModal from './examineModal';
+import { useRouter } from 'next/router';
 
 export default function Examine() {
     const { data: session, status } = useSession();
@@ -17,20 +18,20 @@ export default function Examine() {
     const [open, setOpen] = React.useState<boolean>(false);
 
     const nick = session?.user?.email?.split("@")[0];
-    // const nick ="bbb";
+    const router = useRouter();
+    
     React.useEffect(() => {
         !async function () {
             const response = await fetch("/api/hosting/examine", {
                 method: "POST",
                 body: JSON.stringify({
-                    user: session?.user?.email,
+                    _id: router.query._id,
                 }),
                 headers: {
                     "Content-type": "application/json"
                 }
             })
             const json = await response.json();
-            console.log(json.data);
             setData(json.data);
         }()
     }, [])
@@ -46,10 +47,9 @@ export default function Examine() {
                     <CardActionArea>
                         <CardMedia
                             component="img"
-                            height="300"
                             image={`${data.imageUrl[0]}`}
                             alt="숙소 대표 이미지"
-                            sx={{ borderRadius: 5, padding: 1 }}
+                            sx={{ borderRadius: 5, padding: 1, height:300 }}
                         />
                         <CardContent style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                             <div style={{ display: "flex", flexDirection: "column" }}>

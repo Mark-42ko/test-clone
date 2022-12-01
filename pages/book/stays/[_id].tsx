@@ -7,8 +7,6 @@ import Hostings from "../../../interface/hostings";
 import Link from "next/link";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useSession } from "next-auth/react";
-import Reservation from "../../../interface/reservation";
-
 
 function Stays() {
     const PAYPAL_KEY = process.env.NEXT_PUBLIC_PAYPAL_KEY as string;
@@ -100,7 +98,7 @@ function Stays() {
                             <hr />
                             <Typography style={{ fontSize: 12, marginTop: 25 }}>아래 버튼을 선택하면 <Link href={"/privacyPolicy"}><u><b>호스트가 설정한 숙소 이용규칙</b></u></Link>, <Link href={"/privacyPolicy"}><u><b>에어비앤비 재예약 및 환불 정책</b></u></Link>에 동의하며, 피해에 대한 책임이 본인에게 있을 경우 에어비앤비가 <Link href={"/privacyPolicy"}><u><b>결제 수단으로 청구</b></u></Link>의 조치를 취할 수 있다는 사실에 동의하는 것입니다.</Typography>
                             <Button style={{ backgroundColor: "red", color: "white", marginTop: 25, marginBottom: 25 }}>확인 및 결제</Button>
-                            <PayPalScriptProvider options={{ "client-id": PAYPAL_KEY }} >
+                            <PayPalScriptProvider options={{ "client-id": PAYPAL_KEY, intent: "authorize" }}>
                                 <PayPalButtons style={{ layout: "horizontal" }} forceReRender={[value]}
                                     createOrder={(data, actions) => {
                                         return actions.order.create({
@@ -108,52 +106,56 @@ function Stays() {
                                                 {
                                                     description: "숙소 예약금",
                                                     amount: {
-                                                        value: value,
+                                                        value: value.toString(),
                                                     },
                                                 },
                                             ],
                                         });
                                     }}
                                     onApprove={async (datas, actions) => {
-                                        const response = await fetch("api/findByproductIdReservation", {
+                                        const response = await fetch("/api/valid", {
                                             method: "POST",
                                             body: JSON.stringify({
-                                                productId: router.query.productId
+                                                productId: router.query.productId,
+                                                checkIn: new Date(sdate),
+                                                checkOut: new Date(edate)
                                             }),
                                             headers: {
                                                 "Content-type": "application/json"
                                             }
                                         });
                                         const json = await response.json();
+                                        console.log(json.result);
 
-                                        console.log(json.data);
+                                        if(json.result) {
+                                            const authorized = await actions.order?.authorize();
+                                            console.log(authorized);
+                                            await fetch("/api/reservation", {
+                                                method: "POST",
+                                                body: JSON.stringify({
+                                                    hostingId: data?.user,
+                                                    guestId: session?.user?.email,
+                                                    orderId: datas.orderID,
+                                                    payId: datas.payerID,
+                                                    checkIn: sdate,
+                                                    checkOut: edate,
+                                                    numberOfGuest: router.query.numberOfGuest,
+                                                    numberOfAdults: router.query.numberOfAdults,
+                                                    numberOfChildren: router.query.numberOfChildren,
+                                                    numberOfInfants: router.query.numberOfInfants,
+                                                    productId: router.query.productId,
+                                                    productInfo: data
+                                                }),
+                                                headers: {
+                                                    "Content-type": "application/json"
+                                                }
+                                            });
+                                            router.push("/trips");
+                                        } else{
+                                            alert("이미 예약된 일정입니다. 다시 확인해주세요.");
+                                            router.back();
+                                        }
 
-                                        // json.data.forEach((one:Reservation)=>{
-                                        //     if(new Date(one.checkIn) =< new Date(sdate) && new Date(sdate) =< new Date(one.checkOut) && new Date(one.sdate)  =< new Date(edate) && new Date(edate) =< new Date(one.edate) ){
-                                                
-                                        //     }
-                                        // });
-
-                                        await fetch("/api/reservation", {
-                                            method: "POST",
-                                            body: JSON.stringify({
-                                                hostingId: data?.user,
-                                                guestId: session?.user?.email,
-                                                orderId: datas.orderID,
-                                                payId: datas.payerID,
-                                                checkIn: sdate,
-                                                checkOut: edate,
-                                                numberOfGuest: router.query.numberOfGuest,
-                                                numberOfAdults: router.query.numberOfAdults,
-                                                numberOfChildren: router.query.numberOfChildren,
-                                                numberOfInfants: router.query.numberOfInfants,
-                                                productId: router.query.productId
-                                            }),
-                                            headers: {
-                                                "Content-type": "application/json"
-                                            }
-                                        });
-                                        router.push("/trips");
                                     }}
                                 />
                             </PayPalScriptProvider>

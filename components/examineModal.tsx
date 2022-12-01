@@ -110,7 +110,7 @@ export default function ExamineModal(props: Props) {
                     <hr />
                     <Grid container>
                         <Grid item md={6} sm={12} sx={{ padding: 2 }} style={{ height: "40vh", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                            <img src={`${props.data?.imageUrl[0]}`} style={{ width: "100%", borderRadius: 5, maxHeight: 680, minWidth: 335 }} />
+                            <img src={`${props.data?.imageUrl[0]}`} style={{ width: "100%", borderRadius: 5, maxHeight: 680, minWidth: 335, height:"100%" }} />
                         </Grid>
                         <Grid item md={6} sm={12} sx={{ overflow: "auto", maxHeight: "90%", height: "45vh" }}>
                             <div >

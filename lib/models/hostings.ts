@@ -15,9 +15,10 @@ const hostingsSchema = new Schema({
     secondMenu: { type: Array },
     thirdMenu: { type: Array },
     imageUrl: { type: Array },
-    name: {type: String},
-    price: {type: Number},
-    publishing: {type: Boolean},
+    name: { type: String },
+    price: { type: Number },
+    step: { type: String },
+    publishing: { type: Boolean },
 });
 
 export default mongoose.models.Hostings || mongoose.model("Hostings", hostingsSchema);

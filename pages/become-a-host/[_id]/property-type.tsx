@@ -25,7 +25,7 @@ export default function PropertyType() {
             const response = await fetch("/api/hosting/hostingGroup", {
                 method: "POST",
                 body: JSON.stringify({
-                    user: session?.user?.email,
+                    _id: router.query._id,
                 }),
                 headers: {
                     "Content-type": "application/json"

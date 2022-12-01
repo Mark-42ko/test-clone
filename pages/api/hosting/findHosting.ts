@@ -8,8 +8,8 @@ const handler: NextApiHandler = async (req, res) => {
     mongooseInit();
     await dbConnect();
     if (req.method === "POST") {
-        const data = await hostings.findOne({user: req.body.user}) as Hostings;
-        return res.status(200).json({ result: true, data: data});
+        const ingData = await hostings.find({_id: req.body._id, publishing: {$exists: false}}) as Hostings[];
+        return res.status(200).json({ result: true, ingData: ingData});
     } else {
         return res.status(500).json({ result: false });
     }

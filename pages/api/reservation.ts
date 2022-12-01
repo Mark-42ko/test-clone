@@ -19,7 +19,8 @@ const handler: NextApiHandler = async (req, res) => {
             numberOfAdults: req.body.numberOfAdults,
             numberOfChildren: req.body.numberOfChildren,
             numberOfInfants: req.body.numberOfInfants,
-            productId: req.body.productId
+            productId: req.body.productId,
+            productInfo: req.body.productInfo
         }) as Reservation;
         return res.status(200).json({ result: true, data: data });
     } else {

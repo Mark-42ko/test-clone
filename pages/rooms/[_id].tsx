@@ -40,6 +40,8 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { DateRange, koKR, LocalizationProvider, StaticDateRangePicker } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import MapHostingIndex from "../../components/mapHostingIndex";
+import Reservation from "../../interface/reservation";
+import { useSession } from "next-auth/react";
 
 const firstMenu = [
     { text: "무선 인터넷", icon: <WifiIcon style={{ fontSize: 70, padding: 20, color: "black" }} /> },
@@ -90,6 +92,7 @@ export default function Home() {
     const [endDate, setEndDate] = useState<Date>(new Date());
     const fdate = startDate?.toLocaleString("ko-kr").split(".");
     const sdate = endDate?.toLocaleString("ko-kr").split(".");
+    const [productData, setProductData] = useState<Array<Reservation>>();
 
     useEffect(() => {
         !async function () {
@@ -99,19 +102,40 @@ export default function Home() {
         }()
     }, []);
 
-    useEffect(()=>{
-        if(value[0] !== null && value[1] !== null){
+    useEffect(() => {
+        !async function () {
+            const reservationData = await fetch("/api/findByproductIdReservation", {
+                method: "POST",
+                body: JSON.stringify({
+                    productId: router.query._id
+                }),
+                headers: {
+                    "Content-type": "application/json"
+                }
+            });
+            const jsonData = await reservationData.json();
+            setProductData(jsonData.data);
+        }()
+    }, []);
+
+    useEffect(() => {
+        if (value[0] !== null && value[1] !== null) {
             setStartDate(value[0].$d);
             setEndDate(value[1].$d);
+            
         }
-    },[value]);
+    }, [value]);
 
     const handleClick = () => {
         setGuestOpen(!guestOpen);
     };
-
+    const {data:session, status} = useSession();
     const reservationHandle = () => {
-        router.push(`/book/stays/${router.query._id}?numberOfAdults=${adultCount}&checkin=${fdate[0]}-${fdate[1]}-${fdate[2]}&numberOfGuest=${adultCount+childCount}&checkout=${sdate[0]}-${sdate[1]}-${sdate[2]}&guestCurrency=$&productId=${router.query._id}&isWorkTrip=false&numberOfChildren=${childCount}&numberOfInfants=${babyCount}`);
+        if(session?.user?.email){
+            router.push(`/book/stays/${router.query._id}?numberOfAdults=${adultCount}&checkin=${fdate[0]}-${fdate[1]}-${fdate[2]}&numberOfGuest=${adultCount + childCount}&checkout=${sdate[0]}-${sdate[1]}-${sdate[2]}&guestCurrency=$&productId=${router.query._id}&isWorkTrip=false&numberOfChildren=${childCount}&numberOfInfants=${babyCount}`);
+        } else{
+            alert("로그인 후 이용해주세요.")
+        }
     };
 
     return (
@@ -180,23 +204,46 @@ export default function Home() {
                                     </div>
                                 </div>
                                 <div>
-                                    <Typography style={{fontSize:25}}><b>{data.name}에서 {Math.ceil((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000))}박</b></Typography>
-                                    <Typography style={{fontSize:15}}>{fdate[0]}년 {fdate[1]}월 {fdate[2]}일 ~ {sdate[0]}년 {sdate[1]}월 {sdate[2]}일</Typography>
+                                    <Typography style={{ fontSize: 25 }}><b>{data.name}에서 {Math.ceil((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000))}박</b></Typography>
+                                    <Typography style={{ fontSize: 15 }}>{fdate[0]}년 {fdate[1]}월 {fdate[2]}일 ~ {sdate[0]}년 {sdate[1]}월 {sdate[2]}일</Typography>
                                     <LocalizationProvider dateAdapter={AdapterDayjs} >
                                         <StaticDateRangePicker
                                             displayStaticWrapperAs="desktop"
                                             value={value}
                                             minDate={new Date()}
                                             onChange={(newValue: any) => {
-                                                setValue(newValue)
+                                                if (productData && newValue[0] !== null && newValue[1] !== null) {
+                                                    for (let one of productData) {
+                                                        if (new Date(newValue[0].$d) < new Date(one.checkIn) && new Date(one.checkOut) < new Date(newValue[1].$d)) {
+                                                            alert("이미 예약된 일정입니다. 다시 확인해주세요.");
+                                                            return setValue([newValue[0],null]);
+                                                        }
+                                                    }
+                                                }
+                                                setValue(newValue);
                                             }}
-                                            renderInput={(startProps, endProps) => (
+                                            shouldDisableDate={
+                                                (date) => {
+                                                    let result = false
+                                                    if (productData) {
+                                                        for (let one of productData) {
+                                                            if (new Date(one.checkIn) <= new Date(date) && new Date(date) <= new Date(one.checkOut)) {
+                                                                result = true
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                    return result;
+                                                }
+                                            }
+                                            renderInput={(startProps, endProps) => {
+                                                return(
                                                 <Fragment>
                                                     <TextField {...startProps} />
                                                     <Box sx={{ mx: 2 }}> to </Box>
                                                     <TextField {...endProps} />
-                                                </Fragment>
-                                            )}
+                                                </Fragment>)
+                                            }}
                                         />
                                     </LocalizationProvider>
                                 </div>
@@ -216,7 +263,7 @@ export default function Home() {
                                                     <Typography style={{ fontSize: 14 }}>{sdate[0]}. {sdate[1]}. {sdate[2]}.</Typography>
                                                 </div>
                                             </Button>
-                                            <Calendar startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} setCalendarOpen={setCalendarOpen} calendarOpen={calendarOpen} value={value} setValue={setValue}/>
+                                            <Calendar productData={productData} startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} setCalendarOpen={setCalendarOpen} calendarOpen={calendarOpen} value={value} setValue={setValue} />
                                         </div>
                                         <ListItemButton onClick={handleClick} sx={{ height: 50 }}>
                                             <ListItemText>
@@ -300,7 +347,7 @@ export default function Home() {
                                             </List>
                                         </Collapse>
                                     </div>
-                                    <Button onClick={reservationHandle} style={{ color: "white", backgroundColor: "red", width: "100%", fontSize: 20, marginTop: 15, borderRadius: 10 }}><b>예약하기</b></Button>
+                                    <Button disabled={ startDate?.toString() === endDate?.toString() ? true : false} onClick={reservationHandle} style={{ color: "white", backgroundColor: "red", width: "100%", fontSize: 20, marginTop: 15, borderRadius: 10 }}><b>{ startDate.toString() === endDate.toString() ? "일정을 선택해주세요." : "예약하기" }</b></Button>
                                     <Typography style={{ fontSize: 14, width: "100%", alignItems: "center", justifyContent: "center", display: "flex", marginTop: 15 }}>예약 확정 전에는 요금이 청구되지 않습니다.</Typography>
                                     <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                                         <Typography style={{ fontSize: 17 }}>${data.price} x {Math.ceil((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000))}박</Typography>
@@ -317,11 +364,11 @@ export default function Home() {
                                     </div>
                                 </Box>
                             </Grid>
-                        </Grid><hr style={{width:"100%"}}/>
-                        <Box style={{marginTop:20}}>
-                            <Typography style={{fontSize:30}}><b>호스팅 지역</b></Typography>
+                        </Grid><hr style={{ width: "100%" }} />
+                        <Box style={{ marginTop: 20 }}>
+                            <Typography style={{ fontSize: 30 }}><b>호스팅 지역</b></Typography>
                             <MapHostingIndex lat={data.lat} lng={data.lng} />
-                            <Typography style={{fontSize:20, marginTop:15}}><b>{data.place}</b></Typography>
+                            <Typography style={{ fontSize: 20, marginTop: 15 }}><b>{data.place}</b></Typography>
                         </Box>
                     </Box>
                 </div>

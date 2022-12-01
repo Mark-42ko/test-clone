@@ -16,6 +16,7 @@ type Hostings = {
     imageUrl: [string];
     name: string;
     price: number;
+    step: string;
     publishing: boolean;
 };
 

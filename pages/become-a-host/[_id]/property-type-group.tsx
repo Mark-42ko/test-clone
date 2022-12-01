@@ -5,9 +5,9 @@ import Grid from '@mui/material/Grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Button, ButtonBase } from '@mui/material';
 import { useRouter } from 'next/router';
-import PropetiesCard from '../../components/propetiesCard';
-import Propeties from '../../interface/propeties';
-import DataBar from '../../components/dataBar';
+import PropetiesCard from '../../../components/propetiesCard';
+import Propeties from '../../../interface/propeties';
+import DataBar from '../../../components/dataBar';
 
 const theme = createTheme();
 

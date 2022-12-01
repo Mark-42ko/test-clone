@@ -40,7 +40,7 @@ export default function HeaderMenu(props: props) {
                     <div>
                         <MenuItem onClick={props.handleClose}><b>메시지</b></MenuItem>
                         <MenuItem onClick={props.handleClose}><b>알림</b></MenuItem>
-                        <MenuItem onClick={props.handleClose}><b>여행</b></MenuItem>
+                        <MenuItem onClick={()=>router.push("/trips")}><b>여행</b></MenuItem>
                         <MenuItem onClick={props.handleClose}><b>위시리스트</b></MenuItem><hr />
                         <MenuItem onClick={makeHost}>숙소 호스트 되기</MenuItem>
                         <MenuItem onClick={props.handleClose}>체험 호스팅 하기</MenuItem>
@@ -53,8 +53,8 @@ export default function HeaderMenu(props: props) {
                     <div>
                         <MenuItem onClick={() => setOpen(true)}><b>회원가입</b></MenuItem>
                         <MenuItem onClick={() => setOpen(true)}>로그인</MenuItem><hr />
-                        <MenuItem onClick={props.handleClose}>숙소호스트 되기</MenuItem>
-                        <MenuItem onClick={props.handleClose}>체험호스팅 하기</MenuItem>
+                        <MenuItem onClick={() => alert("로그인 후 이용해주세요")}>숙소호스트 되기</MenuItem>
+                        <MenuItem onClick={() => alert("로그인 후 이용해주세요")}>체험호스팅 하기</MenuItem>
                         <MenuItem onClick={props.handleClose}>도움말</MenuItem>
                         <LoginModal open={open} setOpen={setOpen} handleClose={props.handleClose} />
                     </div>

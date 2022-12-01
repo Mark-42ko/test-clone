@@ -3,7 +3,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { ButtonBase } from '@mui/material';
+import { Button, ButtonBase } from '@mui/material';
 import { useRouter } from 'next/router';
 
 const theme = createTheme();
@@ -38,7 +38,8 @@ export default function FloorPlan() {
                         </div>
                     </div>
                 </Grid>
-                <Grid item xs={12} sm={8} md={6} component={Paper} elevation={6} square sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                <Grid item xs={12} sm={8} md={6} component={Paper} elevation={6} square sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems:"center" }}>
+                    <Button onClick={()=>router.push("/")} style={{fontSize:40, color:"black", backgroundColor:"white", border:"1px solid", borderRadius:5}}>홈으로</Button>
                 </Grid>
             </Grid>
         </ThemeProvider>

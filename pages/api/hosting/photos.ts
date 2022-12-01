@@ -57,7 +57,7 @@ const handler: NextApiHandler = async (req, res) => {
         }
    
         if (req.method === "POST") {
-            const data = await hostings.findOneAndUpdate({user: fields.user}, {$set:{imageUrl : fileUrl}}) as Hostings;
+            const data = await hostings.findOneAndUpdate({_id: fields.user}, {$set:{imageUrl : fileUrl, step: fields.url[0]}}) as Hostings;
             return res.status(200).json({ result: true, data: data});
         } else {
             return res.status(500).json({ result: false });

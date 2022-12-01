@@ -30,19 +30,7 @@ export default function ProgressMobileStepper(props: Props) {
     const [idUrl, setIdUrl] = React.useState<string>("");
 
     React.useEffect(() => {
-        !async function () {
-            const response = await fetch("/api/hosting/hostingGroup", {
-                method: "POST",
-                body: JSON.stringify({
-                    user: session?.user?.email,
-                }),
-                headers: {
-                    "Content-type": "application/json"
-                }
-            });
-            const json = await response.json();
-            setIdUrl(json.data._id);
-        }()
+        setIdUrl(router.query._id as string);
         if (router.pathname === "/become-a-host/property-type-group") {
             setActiveStep(0);
         } else if (router.pathname === "/become-a-host/[_id]/property-type") {
@@ -67,12 +55,13 @@ export default function ProgressMobileStepper(props: Props) {
     }, [])
 
     const handleNext = async () => {
-        if (router.pathname === "/become-a-host/property-type-group") {
+        if (router.pathname === "/become-a-host/[_id]/property-type-group") {
             await fetch("/api/hosting/hostingGroup", {
                 method: "POST",
                 body: JSON.stringify({
-                    user: session!.user!.email,
-                    property: props.target!.group
+                    _id: router.query._id,
+                    property: props.target!.group,
+                    step: `/become-a-host/${idUrl}/property-type-group`
                 }),
                 headers: {
                     "Content-type": "application/json"
@@ -85,8 +74,9 @@ export default function ProgressMobileStepper(props: Props) {
             await fetch("/api/hosting/property", {
                 method: "POST",
                 body: JSON.stringify({
-                    user: session!.user!.email,
-                    property: props.property
+                    _id: idUrl,
+                    property: props.property,
+                    step: `/become-a-host/${idUrl}/property-type`
                 }),
                 headers: {
                     "Content-type": "application/json"
@@ -98,8 +88,9 @@ export default function ProgressMobileStepper(props: Props) {
             await fetch("/api/hosting/privacy", {
                 method: "POST",
                 body: JSON.stringify({
-                    user: session!.user!.email,
-                    privacy: props.privacy
+                    _id: idUrl,
+                    privacy: props.privacy,
+                    step: `/become-a-host/${idUrl}/privacy-type`
                 }),
                 headers: {
                     "Content-type": "application/json"
@@ -111,10 +102,11 @@ export default function ProgressMobileStepper(props: Props) {
             await fetch("/api/hosting/location", {
                 method: "POST",
                 body: JSON.stringify({
-                    user: session!.user!.email,
+                    _id: idUrl,
                     place: props.place,
                     lat: props.lat,
-                    lng: props.lng
+                    lng: props.lng,
+                    step: `/become-a-host/${idUrl}/location`
                 }),
                 headers: {
                     "Content-type": "application/json"
@@ -126,10 +118,11 @@ export default function ProgressMobileStepper(props: Props) {
             await fetch("/api/hosting/floorPlan", {
                 method: "POST",
                 body: JSON.stringify({
-                    user: session!.user!.email,
+                    _id: idUrl,
                     guest: props.guestCount,
                     bed: props.bedCount,
-                    bathroom: props.bathroomCount
+                    bathroom: props.bathroomCount,
+                    step: `/become-a-host/${idUrl}/floor-plan`
                 }),
                 headers: {
                     "Content-type": "application/json"
@@ -141,10 +134,11 @@ export default function ProgressMobileStepper(props: Props) {
             await fetch("/api/hosting/amenities", {
                 method: "POST",
                 body: JSON.stringify({
-                    user: session!.user!.email,
+                    _id: idUrl,
                     firstMenu: props.firstMenu,
                     secondMenu: props.secondMenu,
-                    thirdMenu: props.thirdMenu
+                    thirdMenu: props.thirdMenu,
+                    step: `/become-a-host/${idUrl}/amenities`
                 }),
                 headers: {
                     "Content-type": "application/json"
@@ -157,7 +151,8 @@ export default function ProgressMobileStepper(props: Props) {
             formData.append("itemId", idUrl);
             props.files!.forEach((one) => {
                 formData.append("photos", one);
-                formData.append("user", session!.user!.email as string);
+                formData.append("user", idUrl as string);
+                formData.append("url", `/become-a-host/${idUrl}/photos`);
             });
             const response = await fetch("/api/hosting/photos", {
                 method: "POST",
@@ -169,8 +164,9 @@ export default function ProgressMobileStepper(props: Props) {
             await fetch("/api/hosting/title", {
                 method: "POST",
                 body: JSON.stringify({
-                    user: session!.user!.email,
-                    name: props.text
+                    _id: idUrl,
+                    name: props.text,
+                    step: `/become-a-host/${idUrl}/title`
                 }),
                 headers: {
                     "Content-type": "application/json"
@@ -182,8 +178,9 @@ export default function ProgressMobileStepper(props: Props) {
             await fetch("/api/hosting/price", {
                 method: "POST",
                 body: JSON.stringify({
-                    user: session!.user!.email,
-                    price: props.price
+                    _id: idUrl,
+                    price: props.price,
+                    step:`/become-a-host/${idUrl}/price`
                 }),
                 headers: {
                     "Content-type": "application/json"
@@ -195,8 +192,9 @@ export default function ProgressMobileStepper(props: Props) {
             await fetch("/api/hosting/pub", {
                 method: "POST",
                 body: JSON.stringify({
-                    user: session!.user!.email,
-                    publishing: true
+                    _id: idUrl,
+                    publishing: true,
+                    step:`/become-a-host/${idUrl}/receipt`
                 }),
                 headers: {
                     "Content-type": "application/json"

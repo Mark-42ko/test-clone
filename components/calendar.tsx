@@ -6,6 +6,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
 import { StaticDateRangePicker } from '@mui/x-date-pickers-pro/StaticDateRangePicker';
 import { DateRange } from '@mui/x-date-pickers-pro/DateRangePicker';
 import { Fragment, useEffect, useState } from "react";
+import Reservation from "../interface/reservation";
 
 type Props = {
     setCalendarOpen: Function;
@@ -16,19 +17,20 @@ type Props = {
     setStartDate: Function;
     endDate: Date;
     setEndDate: Function;
+    productData: Reservation[] | undefined;
 }
 
 export default function Calendar(props: Props) {
-    
+
     const sdate = props.startDate.toLocaleString("ko-kr").split(".");
     const edate = props.endDate.toLocaleString("ko-kr").split(".");
 
-    useEffect(()=>{
-        if(props.value[0] !== null && props.value[1] !== null){
+    useEffect(() => {
+        if (props.value[0] !== null && props.value[1] !== null) {
             props.setStartDate(props.value[0].$d);
             props.setEndDate(props.value[1].$d);
         }
-    },[props.value]);
+    }, [props.value]);
 
     const closeButton = () => {
         props.setCalendarOpen(false);
@@ -42,11 +44,11 @@ export default function Calendar(props: Props) {
         >
             <Box sx={{ display: "flex", backgroundColor: "white", flexDirection: "column", borderRadius: 2, padding: 3 }}>
                 <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between" }}>
-                    <div style={{display:"flex", flexDirection:"column"}}>
-                        <Typography style={{ fontSize: 30 }}>{Math.ceil((props.endDate.getTime() - props.startDate.getTime())/(24*60*60*1000))}박</Typography>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                        <Typography style={{ fontSize: 30 }}>{Math.ceil((props.endDate.getTime() - props.startDate.getTime()) / (24 * 60 * 60 * 1000))}박</Typography>
                         <Typography style={{ fontSize: 15 }}>{sdate[0]}년 {sdate[1]}월 {sdate[2]}일 ~ {edate[0]}년 {edate[1]}월 {edate[2]}일</Typography>
                     </div>
-                    <div style={{display:"flex", flexDirection:"row", border:"1px solid", borderRadius:5, height:52}}>
+                    <div style={{ display: "flex", flexDirection: "row", border: "1px solid", borderRadius: 5, height: 52 }}>
                         <Button onClick={() => props.setCalendarOpen(true)} style={{ display: "flex", flexDirection: "row", width: "100%", color: "black", height: "100%" }}>
                             <div style={{ display: "flex", flexDirection: "column", width: 120, height: 50, padding: 8, alignItems: "start" }}>
                                 <Typography style={{ fontSize: 8 }}>체크인</Typography>
@@ -65,9 +67,31 @@ export default function Calendar(props: Props) {
                             displayStaticWrapperAs="desktop"
                             value={props.value}
                             minDate={new Date()}
-                            onChange={(newValue:any) => {
+                            onChange={(newValue: any) => {
+                                if (props.productData && newValue[0] !== null && newValue[1] !== null) {
+                                    for (let one of props.productData) {
+                                        if (new Date(newValue[0].$d) < new Date(one.checkIn) && new Date(one.checkOut) < new Date(newValue[1].$d)) {
+                                            alert("이미 예약된 일정입니다. 다시 확인해주세요.");
+                                            return props.setValue([newValue[0],null]);
+                                        }
+                                    }
+                                }
                                 props.setValue(newValue)
                             }}
+                            shouldDisableDate={
+                                (date) => {
+                                    let result = false;
+                                    if (props.productData) {
+                                        for (let one of props.productData) {
+                                            if (new Date(one.checkIn) <= new Date(date) && new Date(date) <= new Date(one.checkOut)) {
+                                                result = true
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    return result;
+                                }
+                            }
                             renderInput={(startProps, endProps) => (
                                 <Fragment>
                                     <TextField {...startProps} />
@@ -78,7 +102,7 @@ export default function Calendar(props: Props) {
                         />
                     </LocalizationProvider>
                 </div>
-                <Button onClick={closeButton} style={{backgroundColor:"black", color:"white", width:"10%"}}>닫기</Button>
+                <Button onClick={closeButton} style={{ backgroundColor: "black", color: "white", width: "10%" }}>닫기</Button>
             </Box>
         </Modal>
     )
