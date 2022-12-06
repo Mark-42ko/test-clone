@@ -92,7 +92,7 @@ export default function PropertyTypeGroup() {
                             <Button style={{ borderRadius: 30, height: 30, backgroundColor: "#F2F2F2", color: "black" }}><b>도움말</b></Button>
                             <Button style={{ borderRadius: 30, height: 30, backgroundColor: "#F2F2F2", marginLeft: 15, color: "black" }}><b>저장 및 나가기</b></Button>
                         </div>
-                        <div style={{width:"100%", display:"flex", flexDirection:"column", alignItems:"center", marginTop:100, overflow:"auto"}}>
+                        <div style={{width:"100%", height:"80%",display:"flex", flexDirection:"column", alignItems:"center", overflow:"auto"}}>
                             { data && data.map((one)=> {
                                 return(
                                     !one.publishing &&
