@@ -6,7 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Button, ButtonBase } from '@mui/material';
 import { useRouter } from 'next/router';
 import DataBar from '../../../components/dataBar';
-import PrivacyCard from '../../../components/privacyCard';
+import PrivacyCard from '../../../components/card/privacyCard';
 
 const theme = createTheme();
 

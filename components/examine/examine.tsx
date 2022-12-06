@@ -5,7 +5,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Box, CardActionArea } from '@mui/material';
 import { useSession } from 'next-auth/react';
-import Hostings from '../interface/hostings';
+import Hostings from '../../interface/hostings';
 import GradingIcon from '@mui/icons-material/Grading';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CreateIcon from '@mui/icons-material/Create';

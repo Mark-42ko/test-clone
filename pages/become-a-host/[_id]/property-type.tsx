@@ -7,7 +7,7 @@ import { Button, ButtonBase } from '@mui/material';
 import { useRouter } from 'next/router';
 import DataBar from '../../../components/dataBar';
 import Data from '../../../interface/propetiesType';
-import PropetiesTypeCard from '../../../components/propetiesTypeCard';
+import PropetiesTypeCard from '../../../components/card/propetiesTypeCard';
 import Propeties from '../../../interface/propeties';
 import { useSession } from 'next-auth/react';
 

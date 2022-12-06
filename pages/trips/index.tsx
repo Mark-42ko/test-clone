@@ -2,7 +2,7 @@ import Layout from "../../components/layout"
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react";
 import Reservation from "../../interface/reservation";
-import TravelCard from "../../components/travelCard";
+import TravelCard from "../../components/card/travelCard";
 import { Typography } from "@mui/material";
 
 export default function Trips() {
@@ -25,7 +25,7 @@ export default function Trips() {
                 setData(json.data);
             }()
         }
-    }, []);
+    }, [session]);
 
     return (
         <Layout>

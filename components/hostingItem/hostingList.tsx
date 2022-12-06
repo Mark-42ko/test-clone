@@ -1,6 +1,6 @@
 import { Card, CardActionArea, CardContent, CardMedia, Grid, IconButton, Typography } from "@mui/material";
 import { MouseEventHandler, useEffect, useState } from "react";
-import Hostings from "../interface/hostings";
+import Hostings from "../../interface/hostings";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useRouter } from "next/router";
 

@@ -3,7 +3,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import LoginModal from './loginModal';
+import LoginModal from './login/loginModal';
 
 type props = {
     anchorEl: HTMLElement | null;

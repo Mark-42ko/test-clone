@@ -6,10 +6,10 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Box, Button, ButtonBase, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import DataBar from '../../../components/dataBar';
-import SearchMap from '../../../components/searchMap';
-import MapModal from '../../../components/mpaModal';
+import SearchMap from '../../../components/map/searchMap';
+import MapModal from '../../../components/map/mpaModal';
 import Room from '@mui/icons-material/Room';
-import MapLocation from '../../../components/mapLocation';
+import MapLocation from '../../../components/map/mapLocation';
 import PlaceIcon from '@mui/icons-material/Place';
 
 const theme = createTheme();

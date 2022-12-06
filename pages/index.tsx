@@ -1,5 +1,5 @@
 import { Box, Grid } from '@mui/material';
-import HostingList from '../components/hostingList';
+import HostingList from '../components/hostingItem/hostingList';
 import Layout from '../components/layout'
 import Nav from '../components/nav';
 import styles from '../styles/Home.module.css'

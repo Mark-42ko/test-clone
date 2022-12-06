@@ -1,5 +1,5 @@
 import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Typography } from "@mui/material";
-import Reservation from "../interface/reservation";
+import Reservation from "../../interface/reservation";
 
 type Props = {
     data: Reservation;

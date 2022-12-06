@@ -2,7 +2,7 @@ import { TextField, Button, CssVarsProvider, Link, Option, Select, Sheet, Typogr
 import FormControl from "@mui/joy/FormControl"
 import { MailOutline } from "@mui/icons-material";
 import { useState } from "react";
-import Register from "./register";
+import Register from "../register/register";
 import { signIn, useSession } from "next-auth/react";
 import { compare } from "bcryptjs";
 

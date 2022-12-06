@@ -92,13 +92,13 @@ export default function PropertyTypeGroup() {
                             <Button style={{ borderRadius: 30, height: 30, backgroundColor: "#F2F2F2", color: "black" }}><b>도움말</b></Button>
                             <Button style={{ borderRadius: 30, height: 30, backgroundColor: "#F2F2F2", marginLeft: 15, color: "black" }}><b>저장 및 나가기</b></Button>
                         </div>
-                        <div style={{width:"100%", display:"flex", flexDirection:"column", alignItems:"center", marginTop:100}}>
+                        <div style={{width:"100%", display:"flex", flexDirection:"column", alignItems:"center", marginTop:100, overflow:"auto"}}>
                             { data && data.map((one)=> {
                                 return(
                                     !one.publishing &&
                                     <div style={{marginTop:15, width:"100%", alignItems:"center", display:"flex", flexDirection:"column"}}  key={one._id}>
                                 <Button key={one._id} onClick={()=> one.step === "//property-type-group" ? router.push(`/become-a-host/${one._id}/property-type-group`) : router.push(one.step)} style={{fontSize: 30, color:"black", borderRadius:5, border:"1px solid", width:"70%"}}>
-                                    "{ one.step === "/become-a-host/property-type-group" ? buttonTitle[one.step.split("/")[2]] : buttonTitle[one.step.split("/")[3]] }"이어서 만들기
+                                    "{ one.step === "//property-type-group" ? buttonTitle[one.step.split("/")[2]] : buttonTitle[one.step.split("/")[3]] }"이어서 만들기
                                     {/* <Button>삭제</Button> */}
                                 </Button></div>)
                             }

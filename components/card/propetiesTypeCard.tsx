@@ -1,8 +1,8 @@
 import * as React from 'react';
 import Typography from '@mui/material/Typography';
-import Propites from "../interface/propeties"
+import Propites from "../../interface/propeties"
 import { ToggleButton } from '@mui/material';
-import Data from '../interface/propetiesType';
+import Data from '../../interface/propetiesType';
 
 type Props = {
     data: Data;

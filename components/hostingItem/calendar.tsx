@@ -6,7 +6,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
 import { StaticDateRangePicker } from '@mui/x-date-pickers-pro/StaticDateRangePicker';
 import { DateRange } from '@mui/x-date-pickers-pro/DateRangePicker';
 import { Fragment, useEffect, useState } from "react";
-import Reservation from "../interface/reservation";
+import Reservation from "../../interface/reservation";
 
 type Props = {
     setCalendarOpen: Function;

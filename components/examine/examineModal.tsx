@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import Hostings from '../interface/hostings';
+import Hostings from '../../interface/hostings';
 import PoolIcon from '@mui/icons-material/Pool';
 import HotTubIcon from '@mui/icons-material/HotTub';
 import DeckIcon from '@mui/icons-material/Deck';

@@ -1,4 +1,4 @@
-import { Box, Button, Collapse, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField, Typography } from "@mui/material";
+import { Box, Button, Collapse, Grid, IconButton, List, ListItem, ListItemButton, ListItemText, TextField, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState, Fragment } from "react";
 import Layout from "../../components/layout";
@@ -33,15 +33,16 @@ import BlurCircularIcon from '@mui/icons-material/BlurCircular';
 import MedicationIcon from '@mui/icons-material/Medication';
 import FireExtinguisherIcon from '@mui/icons-material/FireExtinguisher';
 import CrisisAlertIcon from '@mui/icons-material/CrisisAlert';
-import Calendar from "../../components/calendar";
+import Calendar from "../../components/hostingItem/calendar";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import { DateRange, koKR, LocalizationProvider, StaticDateRangePicker } from "@mui/x-date-pickers-pro";
+import { DateRange, LocalizationProvider, StaticDateRangePicker } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
-import MapHostingIndex from "../../components/mapHostingIndex";
+import MapHostingIndex from "../../components/map/mapHostingIndex";
 import Reservation from "../../interface/reservation";
 import { useSession } from "next-auth/react";
+import { GetServerSidePropsContext } from "next";
 
 const firstMenu = [
     { text: "무선 인터넷", icon: <WifiIcon style={{ fontSize: 70, padding: 20, color: "black" }} /> },
@@ -78,7 +79,7 @@ const thirdMenu = [
     { text: "일산화탄소 경보기", icon: <CrisisAlertIcon style={{ fontSize: 70, padding: 20, color: "black" }} /> },
 ];
 
-export default function Home() {
+export default function Home({ _id }: { _id: string }) {
     const [data, setData] = useState<Hostings>();
     const router = useRouter();
     const date = new Date().toLocaleString("ko-kr").split(".");
@@ -93,21 +94,22 @@ export default function Home() {
     const fdate = startDate?.toLocaleString("ko-kr").split(".");
     const sdate = endDate?.toLocaleString("ko-kr").split(".");
     const [productData, setProductData] = useState<Array<Reservation>>();
+    const { data: session, status } = useSession();
 
     useEffect(() => {
         !async function () {
-            const reponse = await fetch(`/api/hosting/target?_id=${router.query._id}`);
+            const reponse = await fetch(`/api/hosting/target?_id=${_id}`);
             const json = await reponse.json();
             setData(json.data);
         }()
-    }, []);
+    }, [session]);
 
     useEffect(() => {
         !async function () {
             const reservationData = await fetch("/api/findByproductIdReservation", {
                 method: "POST",
                 body: JSON.stringify({
-                    productId: router.query._id
+                    productId: _id
                 }),
                 headers: {
                     "Content-type": "application/json"
@@ -122,18 +124,18 @@ export default function Home() {
         if (value[0] !== null && value[1] !== null) {
             setStartDate(value[0].$d);
             setEndDate(value[1].$d);
-            
+
         }
     }, [value]);
 
     const handleClick = () => {
         setGuestOpen(!guestOpen);
     };
-    const {data:session, status} = useSession();
+
     const reservationHandle = () => {
-        if(session?.user?.email){
-            router.push(`/book/stays/${router.query._id}?numberOfAdults=${adultCount}&checkin=${fdate[0]}-${fdate[1]}-${fdate[2]}&numberOfGuest=${adultCount + childCount}&checkout=${sdate[0]}-${sdate[1]}-${sdate[2]}&guestCurrency=$&productId=${router.query._id}&isWorkTrip=false&numberOfChildren=${childCount}&numberOfInfants=${babyCount}`);
-        } else{
+        if (session?.user?.email) {
+            router.push(`/book/stays/${_id}?numberOfAdults=${adultCount}&checkin=${fdate[0]}-${fdate[1]}-${fdate[2]}&numberOfGuest=${adultCount + childCount}&checkout=${sdate[0]}-${sdate[1]}-${sdate[2]}&guestCurrency=$&productId=${_id}&isWorkTrip=false&numberOfChildren=${childCount}&numberOfInfants=${babyCount}`);
+        } else {
             alert("로그인 후 이용해주세요.")
         }
     };
@@ -156,9 +158,9 @@ export default function Home() {
                                 <img src={data.imageUrl[0]} style={{ width: "100%", height: "100%", borderRadius: 20 }} />
                             </Grid>
                             <Grid item md={6} sm={12} container sx={{ width: "100%", height: 500, flexWrap: "wrap" }}>
-                                {data.imageUrl.map((one) => {
+                                {data.imageUrl.map((one, idx) => {
                                     if (data.imageUrl[0] !== one) {
-                                        return <img src={one} style={{ width: "50%", height: "50%", borderRadius: 20, padding: 5 }} />
+                                        return <img src={one} style={{ width: "50%", height: "50%", borderRadius: 20, padding: 5 }} key={idx} />
                                     }
                                 })}
                             </Grid>
@@ -216,7 +218,7 @@ export default function Home() {
                                                     for (let one of productData) {
                                                         if (new Date(newValue[0].$d) < new Date(one.checkIn) && new Date(one.checkOut) < new Date(newValue[1].$d)) {
                                                             alert("이미 예약된 일정입니다. 다시 확인해주세요.");
-                                                            return setValue([newValue[0],null]);
+                                                            return setValue([newValue[0], null]);
                                                         }
                                                     }
                                                 }
@@ -237,12 +239,12 @@ export default function Home() {
                                                 }
                                             }
                                             renderInput={(startProps, endProps) => {
-                                                return(
-                                                <Fragment>
-                                                    <TextField {...startProps} />
-                                                    <Box sx={{ mx: 2 }}> to </Box>
-                                                    <TextField {...endProps} />
-                                                </Fragment>)
+                                                return (
+                                                    <Fragment>
+                                                        <TextField {...startProps} />
+                                                        <Box sx={{ mx: 2 }}> to </Box>
+                                                        <TextField {...endProps} />
+                                                    </Fragment>)
                                             }}
                                         />
                                     </LocalizationProvider>
@@ -347,7 +349,7 @@ export default function Home() {
                                             </List>
                                         </Collapse>
                                     </div>
-                                    <Button disabled={ startDate?.toString() === endDate?.toString() ? true : false} onClick={reservationHandle} style={{ color: "white", backgroundColor: "red", width: "100%", fontSize: 20, marginTop: 15, borderRadius: 10 }}><b>{ startDate.toString() === endDate.toString() ? "일정을 선택해주세요." : "예약하기" }</b></Button>
+                                    <Button disabled={startDate?.toString() === endDate?.toString() ? true : false} onClick={reservationHandle} style={{ color: "white", backgroundColor: "red", width: "100%", fontSize: 20, marginTop: 15, borderRadius: 10 }}><b>{startDate.toString() === endDate.toString() ? "일정을 선택해주세요." : "예약하기"}</b></Button>
                                     <Typography style={{ fontSize: 14, width: "100%", alignItems: "center", justifyContent: "center", display: "flex", marginTop: 15 }}>예약 확정 전에는 요금이 청구되지 않습니다.</Typography>
                                     <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                                         <Typography style={{ fontSize: 17 }}>${data.price} x {Math.ceil((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000))}박</Typography>
@@ -355,7 +357,7 @@ export default function Home() {
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                                         <Typography style={{ fontSize: 17 }}><u>서비스 수수료</u></Typography>
-                                        <Typography style={{ fontSize: 17 }}>${(data.price * (Math.ceil((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000)))) * 0.1}</Typography>
+                                        <Typography style={{ fontSize: 17 }}>${((data.price * (Math.ceil((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000)))) * 0.1).toFixed(1)}</Typography>
                                     </div>
                                     <hr />
                                     <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
@@ -375,4 +377,13 @@ export default function Home() {
             }
         </Layout>
     );
+}
+
+export function getServerSideProps(props: GetServerSidePropsContext) {
+    const _id = props.query._id;
+    return {
+        props: {
+            _id: _id
+        }
+    };
 }

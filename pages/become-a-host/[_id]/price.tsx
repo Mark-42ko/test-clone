@@ -6,7 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Button, ButtonBase, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import DataBar from '../../../components/dataBar';
-import PriceTag from '../../../components/priceTag';
+import PriceTag from '../../../components/price/priceTag';
 
 const theme = createTheme();
 

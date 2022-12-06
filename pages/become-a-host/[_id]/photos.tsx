@@ -6,8 +6,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Button, ButtonBase } from '@mui/material';
 import { useRouter } from 'next/router';
 import DataBar from '../../../components/dataBar';
-import PhotoPlace from '../../../components/photoPlace';
-import UploadPhotos from '../../../components/uploadPhotos';
+import PhotoPlace from '../../../components/photo/photoPlace';
+import UploadPhotos from '../../../components/photo/uploadPhotos';
 
 const theme = createTheme();
 

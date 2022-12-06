@@ -6,7 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Button, ButtonBase } from '@mui/material';
 import { useRouter } from 'next/router';
 import DataBar from '../../../components/dataBar';
-import AmenitiesMenu from '../../../components/amenitiesMenu';
+import AmenitiesMenu from '../../../components/amenities/amenitiesMenu';
 
 const theme = createTheme();
 
