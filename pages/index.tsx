@@ -7,7 +7,7 @@ import styles from '../styles/Home.module.css'
 export default function Home() {
   return (
     <Layout>
-      <Nav />
+      {/* <Nav /> 기능 추가중*/}
       <Box className={styles.container}>
         <HostingList />
       </Box>
