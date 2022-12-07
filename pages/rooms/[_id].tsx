@@ -80,7 +80,6 @@ const thirdMenu = [
 ];
 
 export default function Home({ _id, data, productData }: { _id: string, data: Hostings, productData: Array<Reservation> }) {
-    // const [data, setData] = useState<Hostings>();
     const router = useRouter();
     const date = new Date().toLocaleString("ko-kr").split(".");
     const [calendarOpen, setCalendarOpen] = useState<boolean>(false);
@@ -93,38 +92,12 @@ export default function Home({ _id, data, productData }: { _id: string, data: Ho
     const [endDate, setEndDate] = useState<Date>(new Date());
     const fdate = startDate?.toLocaleString("ko-kr").split(".");
     const sdate = endDate?.toLocaleString("ko-kr").split(".");
-    // const [productData, setProductData] = useState<Array<Reservation>>();
     const { data: session, status } = useSession();
-
-    // useEffect(() => {
-    //     !async function () {
-    //         const reponse = await fetch(`/api/hosting/target?_id=${_id}`);
-    //         const json = await reponse.json();
-    //         setData(json.data);
-    //     }()
-    // }, [session]);
-
-    // useEffect(() => {
-    //     !async function () {
-    //         const reservationData = await fetch("/api/findByproductIdReservation", {
-    //             method: "POST",
-    //             body: JSON.stringify({
-    //                 productId: _id
-    //             }),
-    //             headers: {
-    //                 "Content-type": "application/json"
-    //             }
-    //         });
-    //         const jsonData = await reservationData.json();
-    //         setProductData(jsonData.data);
-    //     }()
-    // }, []);
 
     useEffect(() => {
         if (value[0] !== null && value[1] !== null) {
             setStartDate(value[0].$d);
             setEndDate(value[1].$d);
-
         }
     }, [value]);
 
