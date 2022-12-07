@@ -1,4 +1,4 @@
-import { Button, ButtonBase, IconButton } from "@mui/material";
+import { Button, ButtonBase, IconButton, Typography } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import HeaderMenu from "../headerMenu";
@@ -23,17 +23,10 @@ export default function Header() {
 
     return (
         <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%", margin: 30, height: 15 }}>
-            <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="home"
-                sx={{ mr: 2 }}
-                onClick={()=>router.push("/")}
-            >
-                <HomeIcon />
-            </IconButton>
-            <ButtonBase>
+            <ButtonBase onClick={()=>router.push("/")}>
+                <img src="/image/homeButton.png" style={{width:120}}/>
+            </ButtonBase>
+            {/* <ButtonBase>
                 <div style={{ border: "1px solid gray", borderRadius: 40, display: "flex", flexDirection: "row", height: 40, alignItems: "center", width: 300, justifyContent: "space-between" }}>
                     <a style={{ marginLeft: 15, fontSize: 15 }}>어디든지</a>
                     <a style={{ fontSize: 24, marginBottom: 5, color: "gray" }}> | </a>
@@ -42,7 +35,7 @@ export default function Header() {
                     <a style={{ fontSize: 15, color: "gray" }}>게스트추가</a>
                     <SearchIcon style={{ marginRight: 15, color: "white", backgroundColor: "red", borderRadius: 50, fontSize: 25 }} />
                 </div>
-            </ButtonBase>
+            </ButtonBase> 추가예정 */}
             <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                 <Button onClick={()=> session?.user?.email ? router.push("/host/homes") : alert("로그인 후 이용해주세요.")} style={{ fontSize: 15, color:"black" }}><b>호스트 되기</b></Button>
                 <IconButton

@@ -77,14 +77,9 @@ export default function CustomizedInputBase(props: Props) {
                                 </Box>
                             }
                         <div style={{ display: "flex", alignItems: "center", marginTop: 30, width: "100%", height: 50 }}>
-                            <ButtonBase sx={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "left" }} onClick={props.clickHandle}>
+                            <ButtonBase sx={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "left" }} onClick={()=>alert("서비스 준비중!")}>
                                 <NearMeIcon style={{ backgroundColor: "#F2F2F2", borderRadius: 50, fontSize: 40, padding: 10 }} />
                                 <Typography style={{ marginLeft: 12 }}>현재 위치 사용</Typography>
-                            </ButtonBase>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", marginTop: 20, width: "100%", height: 50 }}>
-                            <ButtonBase sx={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "left" }} onClick={props.clickHandle}>
-                                <Typography style={{ marginLeft: 8 }}><u>주소를 직접 입력하세요</u></Typography>
                             </ButtonBase>
                         </div>
                     </Paper>
