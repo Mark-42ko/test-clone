@@ -356,9 +356,9 @@ export default function Home({ _id, data, productData }: { _id: string, data: Ho
 export async function getServerSideProps(props: GetServerSidePropsContext) {
     console.log("STart");
     const _id = props.query._id;
-    const reponse = await fetch(`https://test-clone.vercel.app/api/hosting/target?_id=${_id}`);
+    const reponse = await fetch(`/api/hosting/target?_id=${_id}`);
     const json = await reponse.json();
-    const reservationData = await fetch("https://test-clone.vercel.app/api/findByproductIdReservation", {
+    const reservationData = await fetch("/api/findByproductIdReservation", {
         method: "POST",
         body: JSON.stringify({
             productId: _id
