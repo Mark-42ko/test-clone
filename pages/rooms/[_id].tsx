@@ -79,8 +79,8 @@ const thirdMenu = [
     { text: "일산화탄소 경보기", icon: <CrisisAlertIcon style={{ fontSize: 70, padding: 20, color: "black" }} /> },
 ];
 
-export default function Home({ _id }: { _id: string }) {
-    const [data, setData] = useState<Hostings>();
+export default function Home({ _id, data, productData }: { _id: string, data: Hostings, productData: Array<Reservation> }) {
+    // const [data, setData] = useState<Hostings>();
     const router = useRouter();
     const date = new Date().toLocaleString("ko-kr").split(".");
     const [calendarOpen, setCalendarOpen] = useState<boolean>(false);
@@ -93,32 +93,32 @@ export default function Home({ _id }: { _id: string }) {
     const [endDate, setEndDate] = useState<Date>(new Date());
     const fdate = startDate?.toLocaleString("ko-kr").split(".");
     const sdate = endDate?.toLocaleString("ko-kr").split(".");
-    const [productData, setProductData] = useState<Array<Reservation>>();
+    // const [productData, setProductData] = useState<Array<Reservation>>();
     const { data: session, status } = useSession();
 
-    useEffect(() => {
-        !async function () {
-            const reponse = await fetch(`/api/hosting/target?_id=${_id}`);
-            const json = await reponse.json();
-            setData(json.data);
-        }()
-    }, [session]);
+    // useEffect(() => {
+    //     !async function () {
+    //         const reponse = await fetch(`/api/hosting/target?_id=${_id}`);
+    //         const json = await reponse.json();
+    //         setData(json.data);
+    //     }()
+    // }, [session]);
 
-    useEffect(() => {
-        !async function () {
-            const reservationData = await fetch("/api/findByproductIdReservation", {
-                method: "POST",
-                body: JSON.stringify({
-                    productId: _id
-                }),
-                headers: {
-                    "Content-type": "application/json"
-                }
-            });
-            const jsonData = await reservationData.json();
-            setProductData(jsonData.data);
-        }()
-    }, []);
+    // useEffect(() => {
+    //     !async function () {
+    //         const reservationData = await fetch("/api/findByproductIdReservation", {
+    //             method: "POST",
+    //             body: JSON.stringify({
+    //                 productId: _id
+    //             }),
+    //             headers: {
+    //                 "Content-type": "application/json"
+    //             }
+    //         });
+    //         const jsonData = await reservationData.json();
+    //         setProductData(jsonData.data);
+    //     }()
+    // }, []);
 
     useEffect(() => {
         if (value[0] !== null && value[1] !== null) {
@@ -379,11 +379,25 @@ export default function Home({ _id }: { _id: string }) {
     );
 }
 
-export function getServerSideProps(props: GetServerSidePropsContext) {
+export async function getServerSideProps(props: GetServerSidePropsContext) {
     const _id = props.query._id;
+    const reponse = await fetch(`/api/hosting/target?_id=${_id}`);
+    const json = await reponse.json();
+    const reservationData = await fetch("/api/findByproductIdReservation", {
+        method: "POST",
+        body: JSON.stringify({
+            productId: _id
+        }),
+        headers: {
+            "Content-type": "application/json"
+        }
+    });
+    const jsonData = await reservationData.json();
     return {
         props: {
-            _id: _id
+            _id: _id,
+            data: json.data,
+            productData: jsonData.data
         }
     };
 }
