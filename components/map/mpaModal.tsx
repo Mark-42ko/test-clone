@@ -3,8 +3,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { Button, IconButton, Link, MenuItem, OutlinedInputProps, Select, SelectChangeEvent, styled, Switch, SwitchProps, TextField, TextFieldProps } from '@mui/material';
-// import styled from "@mui/material/styles/styled"
+import { Button, IconButton, Link, MenuItem, OutlinedInputProps, Select, SelectChangeEvent, Switch, SwitchProps, TextField, TextFieldProps } from '@mui/material';
+import styled from "@mui/material/styles/styled"
 import Image from 'next/image';
 
 const style = {
