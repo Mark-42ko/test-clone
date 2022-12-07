@@ -355,10 +355,11 @@ export default function Home({ _id, data, productData }: { _id: string, data: Ho
 
 export async function getServerSideProps(props: GetServerSidePropsContext) {
     console.log("STart");
+    const URI = process.env.NEXT_PUBLIC_URI
     const _id = props.query._id;
-    const reponse = await fetch(`/api/hosting/target?_id=${_id}`);
+    const reponse = await fetch(`${URI}/api/hosting/target?_id=${_id}`);
     const json = await reponse.json();
-    const reservationData = await fetch("/api/findByproductIdReservation", {
+    const reservationData = await fetch(`${URI}/api/findByproductIdReservation`, {
         method: "POST",
         body: JSON.stringify({
             productId: _id
