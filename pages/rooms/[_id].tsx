@@ -80,6 +80,7 @@ const thirdMenu = [
 ];
 
 export default function Home({ _id, data, productData }: { _id: string, data: Hostings, productData: Array<Reservation> }) {
+    console.log("페이지 로딩");
     const router = useRouter();
     const date = new Date().toLocaleString("ko-kr").split(".");
     const [calendarOpen, setCalendarOpen] = useState<boolean>(false);
@@ -353,6 +354,7 @@ export default function Home({ _id, data, productData }: { _id: string, data: Ho
 }
 
 export async function getServerSideProps(props: GetServerSidePropsContext) {
+    console.log("STart");
     const _id = props.query._id;
     const reponse = await fetch(`https://test-clone.vercel.app/api/hosting/target?_id=${_id}`);
     const json = await reponse.json();
@@ -365,7 +367,9 @@ export async function getServerSideProps(props: GetServerSidePropsContext) {
             "Content-type": "application/json"
         }
     });
+    console.log(".............");
     const jsonData = await reservationData.json();
+    console.log("End");
     return {
         props: {
             _id: _id,
